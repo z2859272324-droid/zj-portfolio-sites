@@ -9,7 +9,8 @@ export type ProjectCollection = {
 
 const DATABASE_NAME = 'zhang-jin-portfolio'
 const STORE_NAME = 'content'
-const COLLECTIONS_KEY = 'project-collections-v1'
+const COLLECTIONS_KEY = 'project-collections-v2'
+const LEGACY_COLLECTIONS_KEY = 'project-collections-v1'
 const LEGACY_AIGC_KEY = 'aigc-projects'
 
 function openDatabase() {
@@ -45,11 +46,36 @@ export async function loadProjectCollections(defaults: ProjectCollection[]) {
     return stored
   }
 
+  const legacyCollections = await getStoredValue<ProjectCollection[]>(database, LEGACY_COLLECTIONS_KEY)
+  if (legacyCollections) {
+    database.close()
+    return defaults.map((defaultCollection) => {
+      const legacyCollection = legacyCollections.find((collection) => collection.id === defaultCollection.id)
+      if (!legacyCollection) return defaultCollection
+      if (defaultCollection.id !== 'aigc') return legacyCollection
+
+      const bundledProjects = defaultCollection.projects.filter((project) =>
+        !legacyCollection.projects.some((legacyProject) => legacyProject.id === project.id))
+
+      return {
+        ...legacyCollection,
+        title: defaultCollection.title,
+        subtitle: defaultCollection.subtitle,
+        projects: [...legacyCollection.projects, ...bundledProjects],
+      }
+    })
+  }
+
   const legacyAigc = await getStoredValue<PortfolioProject[]>(database, LEGACY_AIGC_KEY)
   database.close()
 
   if (!legacyAigc) return null
-  return defaults.map((collection) => collection.id === 'aigc' ? { ...collection, projects: legacyAigc } : collection)
+  return defaults.map((collection) => {
+    if (collection.id !== 'aigc') return collection
+    const bundledProjects = collection.projects.filter((project) =>
+      !legacyAigc.some((legacyProject) => legacyProject.id === project.id))
+    return { ...collection, projects: [...legacyAigc, ...bundledProjects] }
+  })
 }
 
 export async function saveProjectCollections(collections: ProjectCollection[]) {

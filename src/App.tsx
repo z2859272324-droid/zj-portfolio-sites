@@ -26,6 +26,7 @@ import {
   type PortfolioProject,
 } from './data/media.generated'
 import { savedAigcProjects } from './data/aigc.generated'
+import { dataAnalysisProjects } from './data/dataAnalysis.generated'
 import {
   clearProjectCollections,
   loadProjectCollections,
@@ -283,29 +284,44 @@ function About() {
   )
 }
 
-const educationExperience = [
+type ExperienceItem = {
+  date: string
+  title: string
+  role: string
+  detail?: string
+  highlights?: string[]
+}
+
+const educationExperience: ExperienceItem[] = [
   {
     date: '2023.09—2026.06',
     title: '南京工业大学 · 建筑学硕士',
-    meta: '建筑设计及其理论 / 2023—2025 二等奖学金',
+    role: '建筑设计及其理论',
+    detail: '发表论文 1 篇 / 2023—2025 二等奖学金',
   },
   {
     date: '2018.09—2023.06',
     title: '常州工学院 · 建筑学本科',
-    meta: '“远瀚杯”优秀奖 / “晋陵杯”优秀奖',
+    role: '建筑设计等专业课程',
+    detail: '“远瀚杯”“晋陵杯”优秀奖',
   },
 ]
 
-const internshipExperience = [
+const internshipExperience: ExperienceItem[] = [
   {
     date: '2024.08—2025.01',
     title: '江苏建筑材料研究设计院有限公司',
-    meta: '建筑实习生 / 方案深化、图纸、建模与投标材料',
+    role: '建筑设计 / 项目协同',
+    highlights: [
+      '参与 6+ 个项目及 2 项调研测绘，将需求转化为设计依据。',
+      '整合图纸、模型、投标与汇报材料，运用 AI 提升表达。',
+    ],
   },
   {
     date: '2022.10—2022.12',
     title: '江苏建筑设计工程有限公司',
-    meta: '建筑实习生 / 资料整理、进度跟踪与成果汇报',
+    role: '建筑设计岗',
+    detail: '资料整理、任务跟进、版本管理与成果汇报',
   },
 ]
 
@@ -316,7 +332,7 @@ function ExperienceGroup({
 }: {
   title: string
   english: string
-  items: typeof educationExperience
+  items: ExperienceItem[]
 }) {
   return (
     <div className="experience-group">
@@ -331,7 +347,13 @@ function ExperienceGroup({
             <span className="experience-date">{item.date}</span>
             <div>
               <h4>{item.title}</h4>
-              <p>{item.meta}</p>
+              <p className="experience-role">{item.role}</p>
+              {item.detail && <p className="experience-detail">{item.detail}</p>}
+              {item.highlights && (
+                <ul className="experience-highlights">
+                  {item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+                </ul>
+              )}
             </div>
           </Reveal>
         ))}
@@ -352,7 +374,7 @@ function Experience() {
         <ExperienceGroup title="实习经历" english="EXPERIENCE" items={internshipExperience} />
       </div>
       <Reveal className="research-strip">
-        <span>RESEARCH OUTPUT</span>
+        <span className="research-strip-label">RESEARCH OUTPUT</span>
         <p>《基于恢复性环境理论的高层办公建筑共享空间优化策略研究》</p>
         <p>《人工智能视域下社区养老空间适老化设计研究》</p>
       </Reveal>
@@ -727,9 +749,9 @@ const defaultProjectCollections: ProjectCollection[] = [
   },
   {
     id: 'aigc',
-    title: 'AIGC',
-    subtitle: 'GENERATIVE DESIGN',
-    projects: savedAigcProjects,
+    title: 'AIGC/数据分析',
+    subtitle: 'AIGC / DATA ANALYSIS',
+    projects: [...savedAigcProjects, ...dataAnalysisProjects],
   },
 ]
 
@@ -814,7 +836,7 @@ function Projects() {
   }
 
   const resetCollections = async () => {
-    if (!window.confirm('确定恢复为素材文件生成的建筑板块和 6 个 AIGC 默认卡片吗？')) return
+    if (!window.confirm('确定恢复为素材文件生成的默认项目板块吗？')) return
     await clearProjectCollections()
     setCollections(defaultProjectCollections)
   }
