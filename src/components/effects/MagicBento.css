@@ -1,0 +1,89 @@
+.magic-bento-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.magic-bento-card {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 340px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.magic-bento-card::after {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  padding: 1px;
+  border-radius: 28px;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--magic-glow), calc(var(--glow-intensity) * 0.9)),
+    rgba(var(--magic-glow), calc(var(--glow-intensity) * 0.25)) 35%,
+    transparent 68%
+  );
+  content: '';
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.magic-bento-card > * {
+  height: 100%;
+}
+
+.magic-bento-spotlight {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--magic-glow), 0.13), rgba(var(--magic-glow), 0.045) 35%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(var(--spotlight-x, 0px) - 50%), calc(var(--spotlight-y, 0px) - 50%));
+  transition: opacity 0.25s ease;
+}
+
+.magic-bento-particle {
+  position: absolute;
+  z-index: 5;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(var(--particle-color), 0.95);
+  box-shadow: 0 0 9px rgba(var(--particle-color), 0.72);
+  pointer-events: none;
+}
+
+.magic-bento-ripple {
+  position: absolute;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--particle-color), 0.45), transparent 68%);
+  pointer-events: none;
+}
+
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .magic-bento-card {
+    transform: none !important;
+  }
+
+  .magic-bento-spotlight,
+  .magic-bento-particle,
+  .magic-bento-ripple {
+    display: none;
+  }
+}

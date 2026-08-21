@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.pnpm-store/
+*.tsbuildinfo
+.DS_Store
+*.local
+
+# 保留在本机的原始素材目录；网站使用 public/ 中已整理的资源
+/建筑/
+/摄影/
+/数据分析/
+/AI/
