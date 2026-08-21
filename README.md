@@ -30,7 +30,8 @@ python scripts/import_portfolio_assets.py
 - 自动生成的数据位于 `src/data/media.generated.ts`，网页优化素材位于 `public/assets/gallery/` 与 `public/assets/architecture/`。
 - 建筑与 AIGC 卡片支持本地开发环境中的站长编辑模式，可新增、删除、改标题与上传图片。
 - 编辑入口只在 `pnpm run dev` 的开发环境显示；正式构建中访客看不到编辑按钮，也无法修改内容。
-- 浏览器内编辑内容保存在当前浏览器的 `localStorage`。正式发布前，如需固化内容，请同步修改 `src/data/media.generated.ts` 或重新运行素材导入脚本。
+- 浏览器内编辑内容保存在当前站点来源对应的 `IndexedDB` 中，不会自动同步到部署域名。
+- 在站长工作台点击“导出配置”，再执行 `node scripts/import_aigc_export.mjs <导出文件路径>`，即可把 AIGC 标题和图片固化到 `src/data/aigc.generated.ts` 与 `public/assets/aigc/`。
 
 ## 画廊展示规则
 

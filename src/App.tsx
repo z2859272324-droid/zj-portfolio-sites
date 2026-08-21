@@ -20,12 +20,12 @@ import {
   capabilities,
 } from './data/portfolio'
 import {
-  aigcProjects,
   architectureProjects,
   photographyRows,
   type GalleryMedia,
   type PortfolioProject,
 } from './data/media.generated'
+import { savedAigcProjects } from './data/aigc.generated'
 import {
   clearProjectCollections,
   loadProjectCollections,
@@ -729,7 +729,7 @@ const defaultProjectCollections: ProjectCollection[] = [
     id: 'aigc',
     title: 'AIGC',
     subtitle: 'GENERATIVE DESIGN',
-    projects: aigcProjects,
+    projects: savedAigcProjects,
   },
 ]
 
@@ -819,6 +819,23 @@ function Projects() {
     setCollections(defaultProjectCollections)
   }
 
+  const exportCollections = () => {
+    const payload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      collections,
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `portfolio-projects-${new Date().toISOString().slice(0, 10)}.json`
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <section className="projects section-shell" id="projects">
       <div className="section-index">03 / PROJECTS</div>
@@ -834,6 +851,7 @@ function Projects() {
                   <Plus size={17} aria-hidden="true" />
                   新增板块
                 </button>
+                <button className="collection-edit-button" onClick={exportCollections}>导出配置</button>
                 <button className="owner-reset-button" onClick={resetCollections}>恢复默认</button>
               </>
             )}
