@@ -1,6 +1,6 @@
 # 我的个人网站
 
-张进的建筑设计、AIGC、数据洞察与摄影个人作品集。使用 React、Vite 与 TypeScript 构建，适配桌面端和移动端。
+关于建筑设计、AIGC、数据洞察与摄影个人作品集。使用 React、Vite 与 TypeScript 构建，适配桌面端和移动端。
 
 ## 运行
 
