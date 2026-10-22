@@ -26,7 +26,6 @@ import {
   type PortfolioProject,
 } from './data/media.generated'
 import { savedAigcProjects } from './data/aigc.generated'
-import { dataAnalysisProjects } from './data/dataAnalysis.generated'
 import {
   clearProjectCollections,
   loadProjectCollections,
@@ -76,7 +75,7 @@ function Header() {
   const [open, setOpen] = useState(false)
   const links = [
     { id: 'about', label: '关于' },
-    { id: 'experience', label: '经历' },
+    { id: 'content', label: '运营' },
     { id: 'projects', label: '项目' },
     { id: 'strengths', label: '优势' },
   ]
@@ -259,24 +258,24 @@ function About() {
       </div>
       <div className="about-atmosphere" aria-hidden="true" />
       <div className="section-index">01 / ABOUT</div>
+      <div className="about-editorial-title" aria-hidden="true"><span>ABOUT</span><em>ME</em></div>
       <div className="about-layout">
         <Reveal className="portrait-card">
           <div className="portrait-frame">
             <img src="/assets/profile/dsc00387-original.webp" alt="张进摄影作品《DSC00387-1》" />
-            <div className="portrait-meta">
-              <span>ZHANG JIN</span>
-              <span>2026届建筑学硕士</span>
-            </div>
           </div>
         </Reveal>
         <div className="about-copy">
           <Reveal>
+            <div className="about-name"><strong>张进</strong><span>ZHANG JIN</span></div>
             <p className="body-large">
-              我是张进。聚焦建筑空间、AI 辅助设计与用户研究。
+              聚焦建筑空间、AI 辅助设计与内容研究。
             </p>
-            <p className="about-philosophy">
-              建筑设计是我的基础，AI 与数据延伸设计方法，摄影让我保持对现实空间的敏感。
-            </p>
+            <div className="about-bio-lines">
+              <p>南京工业大学 · 建筑学硕士（2026届）</p>
+              <p>抖音/小红书内容创作者</p>
+              <p>积极运用AI进行流程简化和内容生产表达</p>
+            </div>
           </Reveal>
         </div>
       </div>
@@ -284,99 +283,59 @@ function About() {
   )
 }
 
-type ExperienceItem = {
-  date: string
-  title: string
-  role: string
-  detail?: string
-  highlights?: string[]
+const contentOpsMedia = {
+  strategy: '/assets/content-ops/strategy.jpg',
+  xiaohongshu: '/assets/content-ops/xiaohongshu.jpg',
+  douyin: '/assets/content-ops/douyin.jpg',
+  topics: '/assets/content-ops/sop-topics.jpg',
+  metrics: '/assets/content-ops/sop-metrics.jpg',
+  insights: '/assets/content-ops/sop-insights.webp',
+  library: '/assets/content-ops/sop-library.jpg',
 }
 
-const educationExperience: ExperienceItem[] = [
-  {
-    date: '2023.09—2026.06',
-    title: '南京工业大学 · 建筑学硕士',
-    role: '建筑设计及其理论',
-    detail: '发表论文 1 篇 / 2023—2025 二等奖学金',
-  },
-  {
-    date: '2018.09—2023.06',
-    title: '常州工学院 · 建筑学本科',
-    role: '建筑设计等专业课程',
-    detail: '“远瀚杯”“晋陵杯”优秀奖',
-  },
-]
-
-const internshipExperience: ExperienceItem[] = [
-  {
-    date: '2024.08—2025.01',
-    title: '江苏建筑材料研究设计院有限公司',
-    role: '建筑设计 / 项目协同',
-    highlights: [
-      '参与 6+ 个项目及 2 项调研测绘，将需求转化为设计依据。',
-      '整合图纸、模型、投标与汇报材料，运用 AI 提升表达。',
-    ],
-  },
-  {
-    date: '2022.10—2022.12',
-    title: '江苏建筑设计工程有限公司',
-    role: '建筑设计岗',
-    detail: '资料整理、任务跟进、版本管理与成果汇报',
-  },
-]
-
-function ExperienceGroup({
-  title,
-  english,
-  items,
-}: {
-  title: string
-  english: string
-  items: ExperienceItem[]
-}) {
+function ContentOperations() {
   return (
-    <div className="experience-group">
-      <div className="experience-group-header">
-        <h3>{title}</h3>
-        <span>{english}</span>
+    <section className="content-ops section-shell" id="content">
+      <div className="section-index">02 / CONTENT</div>
+      <div className="content-ops-heading">
+        <Reveal>
+          <p className="content-ops-kicker">CONTENT OPERATIONS</p>
+          <h2>内容<span>运营</span></h2>
+        </Reveal>
+        <span className="content-ops-ghost" aria-hidden="true">PROJECT</span>
       </div>
-      <div className="experience-group-list">
-        {items.map((item, index) => (
-          <Reveal className="experience-item" delay={index * 0.08} key={item.date}>
-            <span className="experience-number">0{index + 1}</span>
-            <span className="experience-date">{item.date}</span>
-            <div>
-              <h4>{item.title}</h4>
-              <p className="experience-role">{item.role}</p>
-              {item.detail && <p className="experience-detail">{item.detail}</p>}
-              {item.highlights && (
-                <ul className="experience-highlights">
-                  {item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
-                </ul>
-              )}
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </div>
-  )
-}
 
-function Experience() {
-  return (
-    <section className="experience section-shell" id="experience">
-      <div className="section-index section-index--light">02 / EXPERIENCE</div>
-      <Reveal>
-        <h2 className="display-heading display-heading--dark experience-heading">经历与研究</h2>
-      </Reveal>
-      <div className="experience-groups">
-        <ExperienceGroup title="教育经历" english="EDUCATION" items={educationExperience} />
-        <ExperienceGroup title="实习经历" english="EXPERIENCE" items={internshipExperience} />
+      <div className="content-ops-showcase">
+        <Reveal className="content-ops-strategy">
+          <div className="content-ops-panel-title"><span>01 / METHOD</span><h3>运营思路</h3></div>
+          <div className="content-ops-strategy-image"><img src={contentOpsMedia.strategy} alt="从思考盘点到数据分析的七步运营思路" loading="lazy" /></div>
+        </Reveal>
+        <Reveal className="content-ops-accounts" delay={0.12}>
+          <div className="content-ops-panel-title"><span>02 / CHANNELS</span><h3>账号展示</h3></div>
+          <div className="content-ops-account-images">
+            <figure><img src={contentOpsMedia.xiaohongshu} alt="张进的小红书内容创作者主页" loading="lazy" /><figcaption>小红书 / 摄影与城市观察</figcaption></figure>
+            <figure><img src={contentOpsMedia.douyin} alt="张进的抖音内容创作者主页" loading="lazy" /><figcaption>抖音 / 影像内容创作</figcaption></figure>
+          </div>
+        </Reveal>
       </div>
-      <Reveal className="research-strip">
-        <span className="research-strip-label">RESEARCH OUTPUT</span>
-        <p>《基于恢复性环境理论的高层办公建筑共享空间优化策略研究》</p>
-        <p>《人工智能视域下社区养老空间适老化设计研究》</p>
+
+      <Reveal className="content-ops-sop">
+        <div className="content-ops-sop-copy">
+          <span className="content-ops-overline">03 / AI CONTENT WORKFLOW</span>
+          <h3>AI 内容助手 <em>SOP</em></h3>
+          <p>整合内容搜索、样本对比与选题策划流程，辅助抖音和小红书的内容研究与生产。</p>
+          <ol>
+            <li><span>01</span>检索平台真实内容</li>
+            <li><span>02</span>分析爆款与互动数据</li>
+            <li><span>03</span>沉淀可执行选题</li>
+          </ol>
+        </div>
+        <div className="content-ops-sop-media">
+          <figure className="content-ops-sop-media--wide"><img src={contentOpsMedia.topics} alt="内容助手整理的热门选题分析表" loading="lazy" /><figcaption>热门选题分析</figcaption></figure>
+          <figure><img src={contentOpsMedia.metrics} alt="内容助手整理的逐条数据校对表" loading="lazy" /><figcaption>数据校对</figcaption></figure>
+          <figure><img src={contentOpsMedia.insights} alt="内容助手从样本中归纳出的选题规律" loading="lazy" /><figcaption>样本洞察</figcaption></figure>
+          <figure className="content-ops-sop-media--wide"><img src={contentOpsMedia.library} alt="内容助手生成的候选选题库" loading="lazy" /><figcaption>候选选题库</figcaption></figure>
+        </div>
       </Reveal>
     </section>
   )
@@ -742,18 +701,49 @@ function CollectionEditor({
 
 const defaultProjectCollections: ProjectCollection[] = [
   {
+    id: 'aigc',
+    title: 'AIGC',
+    subtitle: 'AIGC',
+    projects: savedAigcProjects,
+  },
+  {
     id: 'architecture',
     title: '建筑设计',
     subtitle: 'ARCHITECTURE',
     projects: architectureProjects,
   },
-  {
-    id: 'aigc',
-    title: 'AIGC/数据分析',
-    subtitle: 'AIGC / DATA ANALYSIS',
-    projects: [...savedAigcProjects, ...dataAnalysisProjects],
-  },
 ]
+
+const promoteAigcCollection = (items: ProjectCollection[]) => {
+  const aigcIndex = items.findIndex((item) => item.id === 'aigc')
+  if (aigcIndex <= 0) return items
+  return [items[aigcIndex], ...items.filter((item) => item.id !== 'aigc')]
+}
+
+const aigcWorkflowImage = {
+  src: '/assets/aigc/project-02/workflow.jpg',
+  alt: 'AI电商生图SOP · 无限画布工作流',
+}
+
+const migratePreviousCollections = (items: ProjectCollection[]): ProjectCollection[] =>
+  items.map((collection) => {
+    if (collection.id !== 'aigc') return collection
+
+    return {
+      ...collection,
+      title: 'AIGC',
+      subtitle: 'AIGC',
+      projects: collection.projects
+        .filter((project) => project.id !== 'data-analysis-app-user-growth')
+        .map((project) => project.id === 'aigc-02'
+          ? {
+              ...project,
+              title: 'AI电商生图SOP',
+              images: [aigcWorkflowImage, ...project.images.filter((image) => image.src !== aigcWorkflowImage.src)],
+            }
+          : project),
+    }
+  })
 
 const renumberProjects = (items: PortfolioProject[]) => items.map((item, index) => ({
   ...item,
@@ -769,9 +759,9 @@ function Projects() {
   const [editingCollection, setEditingCollection] = useState<ProjectCollection | null>(null)
 
   useEffect(() => {
-    loadProjectCollections(defaultProjectCollections)
+    loadProjectCollections(defaultProjectCollections, migratePreviousCollections)
       .then((stored) => {
-        if (stored) setCollections(stored.map((collection) => ({ ...collection, projects: renumberProjects(collection.projects) })))
+        if (stored) setCollections(promoteAigcCollection(stored).map((collection) => ({ ...collection, projects: renumberProjects(collection.projects) })))
       })
       .finally(() => setContentReady(true))
   }, [])
@@ -1037,7 +1027,7 @@ export default function App() {
       <Hero />
       <MarqueeGallery />
       <About />
-      <Experience />
+      <ContentOperations />
       <Projects />
       <Strengths />
       <Contact />

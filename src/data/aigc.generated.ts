@@ -73,16 +73,20 @@ export const savedAigcProjects: PortfolioProject[] = [
   {
     "id": "aigc-02",
     "number": "02",
-    "title": "AIGC 电商详情图",
+    "title": "AI电商生图SOP",
     "category": "AIGC",
     "images": [
       {
+        "src": "/assets/aigc/project-02/workflow.jpg",
+        "alt": "AI电商生图SOP · 无限画布工作流"
+      },
+      {
         "src": "/assets/aigc/project-02/01.webp",
-        "alt": "AIGC 电商详情图 · 图 1"
+        "alt": "AI电商生图SOP · 图 2"
       },
       {
         "src": "/assets/aigc/project-02/02.webp",
-        "alt": "AIGC 电商详情图 · 图 2"
+        "alt": "AI电商生图SOP · 图 3"
       }
     ]
   },

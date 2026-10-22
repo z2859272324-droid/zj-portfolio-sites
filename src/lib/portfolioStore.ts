@@ -9,7 +9,8 @@ export type ProjectCollection = {
 
 const DATABASE_NAME = 'zhang-jin-portfolio'
 const STORE_NAME = 'content'
-const COLLECTIONS_KEY = 'project-collections-v2'
+const COLLECTIONS_KEY = 'project-collections-v3'
+const PREVIOUS_COLLECTIONS_KEY = 'project-collections-v2'
 const LEGACY_COLLECTIONS_KEY = 'project-collections-v1'
 const LEGACY_AIGC_KEY = 'aigc-projects'
 
@@ -36,7 +37,10 @@ function getStoredValue<T>(database: IDBDatabase, key: string) {
   })
 }
 
-export async function loadProjectCollections(defaults: ProjectCollection[]) {
+export async function loadProjectCollections(
+  defaults: ProjectCollection[],
+  migratePrevious: (collections: ProjectCollection[]) => ProjectCollection[] = (collections) => collections,
+) {
   if (typeof indexedDB === 'undefined') return null
   const database = await openDatabase()
   const stored = await getStoredValue<ProjectCollection[]>(database, COLLECTIONS_KEY)
@@ -46,10 +50,16 @@ export async function loadProjectCollections(defaults: ProjectCollection[]) {
     return stored
   }
 
+  const previous = await getStoredValue<ProjectCollection[]>(database, PREVIOUS_COLLECTIONS_KEY)
+  if (previous) {
+    database.close()
+    return migratePrevious(previous)
+  }
+
   const legacyCollections = await getStoredValue<ProjectCollection[]>(database, LEGACY_COLLECTIONS_KEY)
   if (legacyCollections) {
     database.close()
-    return defaults.map((defaultCollection) => {
+    return migratePrevious(defaults.map((defaultCollection) => {
       const legacyCollection = legacyCollections.find((collection) => collection.id === defaultCollection.id)
       if (!legacyCollection) return defaultCollection
       if (defaultCollection.id !== 'aigc') return legacyCollection
@@ -63,19 +73,19 @@ export async function loadProjectCollections(defaults: ProjectCollection[]) {
         subtitle: defaultCollection.subtitle,
         projects: [...legacyCollection.projects, ...bundledProjects],
       }
-    })
+    }))
   }
 
   const legacyAigc = await getStoredValue<PortfolioProject[]>(database, LEGACY_AIGC_KEY)
   database.close()
 
   if (!legacyAigc) return null
-  return defaults.map((collection) => {
+  return migratePrevious(defaults.map((collection) => {
     if (collection.id !== 'aigc') return collection
     const bundledProjects = collection.projects.filter((project) =>
       !legacyAigc.some((legacyProject) => legacyProject.id === project.id))
     return { ...collection, projects: [...legacyAigc, ...bundledProjects] }
-  })
+  }))
 }
 
 export async function saveProjectCollections(collections: ProjectCollection[]) {
@@ -98,7 +108,11 @@ export async function clearProjectCollections() {
 
   await new Promise<void>((resolve, reject) => {
     const transaction = database.transaction(STORE_NAME, 'readwrite')
-    transaction.objectStore(STORE_NAME).delete(COLLECTIONS_KEY)
+    const store = transaction.objectStore(STORE_NAME)
+    store.delete(COLLECTIONS_KEY)
+    store.delete(PREVIOUS_COLLECTIONS_KEY)
+    store.delete(LEGACY_COLLECTIONS_KEY)
+    store.delete(LEGACY_AIGC_KEY)
     transaction.oncomplete = () => resolve()
     transaction.onerror = () => reject(transaction.error)
   })
